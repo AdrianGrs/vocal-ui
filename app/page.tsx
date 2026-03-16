@@ -1,177 +1,152 @@
-"use client";
+<aside className="rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
+  <div className="mb-6 flex items-center justify-between">
+    <h2 className="text-2xl font-semibold">Monitor job</h2>
+    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/70">
+      {statusText[status]}
+    </span>
+  </div>
 
-import { useEffect, useMemo, useRef, useState } from "react";
+  <div className="rounded-[24px] border border-white/10 bg-black/25 p-5">
+    <div className="mb-3 flex items-center justify-between text-sm text-white/60">
+      <span>Progres</span>
+      <span>{progress}%</span>
+    </div>
 
-const API = "https://aiyiz7019bk9xi-8000.proxy.runpod.net";
-const MAX_FILE_SIZE_MB = 100;
-
-type JobStatus = "idle" | "uploading" | "queued" | "processing" | "done" | "error";
-
-type StatusResponse = {
-  status?: JobStatus;
-  progress?: number;
-  stems?: Record<string, string>;
-  error?: string;
-};
-
-const ACCEPTED_AUDIO_TYPES = [
-  "audio/mpeg",
-  "audio/mp3",
-  "audio/wav",
-  "audio/x-wav",
-  "audio/wave",
-  "audio/mp4",
-  "audio/x-m4a",
-  "audio/aac",
-  "audio/flac",
-  "audio/ogg",
-  "audio/webm",
-];
-
-const STEM_META: Record<string, { label: string; icon: string; description: string }> = {
-  vocals: { label: "Vocals", icon: "🎤", description: "Vocea principală separată" },
-  drums: { label: "Drums", icon: "🥁", description: "Percuție și ritm" },
-  bass: { label: "Bass", icon: "🎸", description: "Linia de bass separată" },
-  other: { label: "Other", icon: "🎹", description: "Restul instrumentelor" },
-};
-
-export default function Home() {
-  const [file, setFile] = useState<File | null>(null);
-  const [jobId, setJobId] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [status, setStatus] = useState<JobStatus>("idle");
-  const [error, setError] = useState("");
-  const [isBusy, setIsBusy] = useState(false);
-  const [stems, setStems] = useState<Record<string, string>>({});
-
-  const pollRef = useRef<NodeJS.Timeout | null>(null);
-  const toolRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-    };
-  }, []);
-
-  const stemUrl = (stemName: string) => `${API}/download/stem/${jobId}/${stemName}`;
-
-  const handleUpload = async () => {
-    if (!file) return;
-
-    setStatus("uploading");
-    setIsBusy(true);
-
-    const form = new FormData();
-    form.append("file", file);
-
-    const res = await fetch(`${API}/upload`, {
-      method: "POST",
-      body: form,
-    });
-
-    const data = await res.json();
-    setJobId(data.job_id);
-    setStatus("processing");
-
-    pollRef.current = setInterval(async () => {
-      const r = await fetch(`${API}/status/${data.job_id}`);
-      const d: StatusResponse = await r.json();
-
-      setProgress(d.progress || 0);
-      setStatus(d.status || "processing");
-
-      if (d.status === "done") {
-        clearInterval(pollRef.current!);
-        setIsBusy(false);
-        setStems(d.stems || {});
-      }
-    }, 2000);
-  };
-
-  const availableStems = useMemo(() => Object.keys(stems || {}), [stems]);
-
-  return (
-    <main className="min-h-screen bg-black text-white p-10">
-
-      <h1 className="text-4xl font-bold mb-10">Vocal Remover Pro</h1>
-
-      <input
-        type="file"
-        accept="audio/*"
-        onChange={(e) => setFile(e.target.files?.[0] || null)}
-        className="mb-6"
+    <div className="h-4 overflow-hidden rounded-full bg-white/10">
+      <div
+        className="h-full rounded-full bg-gradient-to-r from-white to-white/70 transition-all duration-500"
+        style={{ width: `${Math.max(0, Math.min(progress, 100))}%` }}
       />
+    </div>
 
-      <button
-        onClick={handleUpload}
-        className="bg-white text-black px-6 py-3 rounded-xl mb-10"
-      >
-        Start
-      </button>
+    <p className="mt-4 text-sm leading-6 text-white/55">{statusNote}</p>
+  </div>
 
-      <div className="mb-10">
-        Status: {status} — {progress}%
+  <div className="mt-6 grid gap-4">
+    <div className="rounded-[24px] border border-white/10 bg-black/25 p-5">
+      <p className="text-sm text-white/45">Status</p>
+      <p className="mt-1 text-lg font-medium">{statusText[status]}</p>
+    </div>
+
+    <div className="rounded-[24px] border border-white/10 bg-black/25 p-5">
+      <p className="text-sm text-white/45">Job ID</p>
+      <p className="mt-1 break-all text-sm text-white/75">{jobId || "—"}</p>
+    </div>
+
+    {error && (
+      <div className="rounded-[24px] border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-200">
+        <div className="font-medium">A apărut o eroare</div>
+        <div className="mt-1">{error}</div>
+        {file && (
+          <button
+            onClick={handleRetry}
+            className="mt-4 rounded-xl border border-red-300/20 bg-red-400/10 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-400/20"
+          >
+            Încearcă din nou
+          </button>
+        )}
+      </div>
+    )}
+  </div>
+
+  {status === "done" && availableStems.length > 0 && (
+    <div className="mt-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-lg font-semibold">Rezultate</h3>
+        <button
+          onClick={handleDownloadAll}
+          className="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/5"
+        >
+          Descarcă tot
+        </button>
       </div>
 
-      {status === "done" && (
-        <div>
-          <h2 className="text-2xl mb-4">Rezultate</h2>
+      <div className="grid gap-4">
+        {availableStems.map((stem) => {
+          const meta = STEM_META[stem] || {
+            label: stem,
+            icon: "🎧",
+            description: "Stem audio procesat",
+          };
 
-          {availableStems.map((stem) => (
-            <div key={stem} className="mb-6">
-              <div>{stem}</div>
+          return (
+            <div
+              key={stem}
+              className="rounded-[22px] border border-white/10 bg-black/25 p-4"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{meta.icon}</span>
+                    <h3 className="text-base font-semibold">{meta.label}</h3>
+                  </div>
+                  <p className="mt-1 text-sm text-white/55">{meta.description}</p>
+                </div>
 
-              <audio controls src={stemUrl(stem)} className="w-full mt-2" />
+                <button
+                  onClick={() => handleDownloadStem(stem)}
+                  className="shrink-0 rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/5"
+                >
+                  Descarcă
+                </button>
+              </div>
 
-              <a
-                href={stemUrl(stem)}
-                target="_blank"
-                className="underline mt-2 block"
+              <audio
+                className="mt-4 w-full"
+                controls
+                preload="none"
+                src={stemUrl(stem)}
               >
-                Download
-              </a>
+                Browserul tău nu suportă audio preview.
+              </audio>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* DONATIONS ALWAYS VISIBLE */}
-
-      <div className="mt-20 border border-white/20 p-8 rounded-3xl text-center">
-        <h3 className="text-2xl mb-4">💖 Susține proiectul</h3>
-
-        <p className="mb-6 text-white/60">
-          Toolul rulează pe servere AI cu costuri reale.  
-          Dacă ți-a fost util, poți contribui.
-        </p>
-
-        <div className="flex flex-col gap-3 items-center">
-          <a
-            href="https://revolut.me/adrian4sbr"
-            target="_blank"
-            className="bg-white text-black px-6 py-3 rounded-xl"
-          >
-            Revolut
-          </a>
-
-          <a
-            href="https://paypal.me/Adriangrs88"
-            target="_blank"
-            className="border border-white px-6 py-3 rounded-xl"
-          >
-            PayPal
-          </a>
-
-          <a
-            href="https://buymeacoffee.com/vocalremoverpro"
-            target="_blank"
-            className="border border-white px-6 py-3 rounded-xl"
-          >
-            BuyMeACoffee
-          </a>
-        </div>
+          );
+        })}
       </div>
+    </div>
+  )}
 
-    </main>
-  );
-}
+  <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
+    <h3 className="mb-3 text-xl font-semibold">💖 Susține acest proiect</h3>
+
+    <p className="mb-4 text-white/65">
+      Acest tool rulează pe servere AI care implică costuri reale. Dacă ți-a economisit
+      timp sau ți-a fost util, îl poți susține printr-o donație.
+    </p>
+
+    <p className="mb-5 text-sm text-white/45">
+      Orice contribuție ajută la menținerea proiectului gratuit.
+    </p>
+
+    <div className="flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+      <a
+        href="https://revolut.me/adrian4sbr"
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-xl bg-white px-6 py-3 font-semibold text-black transition hover:opacity-90"
+      >
+        Donează prin Revolut
+      </a>
+
+      <a
+        href="https://buymeacoffee.com/vocalremoverpro"
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+      >
+        Buy Me a Coffee
+      </a>
+
+      <a
+        href="https://paypal.me/Adriangrs88"
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+      >
+        Donează prin PayPal
+      </a>
+    </div>
+
+    <p className="mt-4 text-xs text-white/35">Mulțumesc pentru susținere.</p>
+  </div>
+</aside>
