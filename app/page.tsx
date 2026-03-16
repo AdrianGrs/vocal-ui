@@ -51,6 +51,40 @@ const STEM_META: Record<string, { label: string; icon: string; description: stri
   },
 };
 
+const MODEL_DETAILS: Record<
+  string,
+  {
+    title: string;
+    short: string;
+    description: string;
+  }
+> = {
+  htdemucs: {
+    title: "htdemucs",
+    short: "Recomandat pentru majoritatea cazurilor",
+    description:
+      "Cel mai bun echilibru între viteză și calitate. Dacă nu știi ce să alegi, începe cu acest model.",
+  },
+  htdemucs_ft: {
+    title: "htdemucs_ft",
+    short: "Mai lent, dar adesea mai curat",
+    description:
+      "Variantă mai rafinată, utilă când vrei o separare mai atentă și accepți timp mai mare de procesare.",
+  },
+  mdx_extra: {
+    title: "mdx_extra",
+    short: "Alternativă solidă pentru comparație",
+    description:
+      "Poate oferi rezultate mai bune pe unele piese. Bun dacă vrei să testezi o separare diferită față de seria Demucs.",
+  },
+  mdx_extra_q: {
+    title: "mdx_extra_q",
+    short: "Mai rapid, mai ușor",
+    description:
+      "Potrivit pentru test rapid sau când viteza contează mai mult decât rafinarea maximă a separării.",
+  },
+};
+
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [jobId, setJobId] = useState("");
@@ -324,17 +358,17 @@ export default function Home() {
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <div className="mb-5 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/75">
-              4 stem-uri separate • upload rapid • preview instant
+              4 stem-uri separate • procesare rapidă • preview direct în browser
             </div>
 
             <h1 className="max-w-4xl text-5xl font-semibold leading-tight tracking-tight md:text-7xl">
-              Separă vocea și instrumentele din orice melodie în{" "}
-              <span className="text-white/60">câteva secunde</span>.
+              Separă vocea și instrumentele din orice melodie,{" "}
+              <span className="text-white/60">rapid și simplu</span>.
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-white/65">
-              Încarci track-ul, AI-ul procesează și primești vocals, drums, bass și other separat.
-              Fără instalări. Fără complicații.
+              Încarci fișierul, alegi modelul potrivit și primești separat vocals, drums, bass și
+              other. Totul direct în browser, fără instalări și fără workflow complicat.
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -349,12 +383,13 @@ export default function Home() {
                 href="#cum-functioneaza"
                 className="rounded-2xl border border-white/10 px-6 py-4 font-semibold text-white transition hover:bg-white/5"
               >
-                Cum funcționează
+                Vezi cum funcționează
               </a>
             </div>
 
             <p className="mt-5 text-sm text-white/45">
-              ⚡ Rulează pe servere GPU reale • Procesare AI avansată
+              Rulează pe servere GPU reale • Procesare audio AI • Rezultate gata de preview și
+              download
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
@@ -364,13 +399,13 @@ export default function Home() {
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-                <p className="text-3xl font-semibold">100MB</p>
-                <p className="mt-2 text-sm text-white/60">limită upload per fișier</p>
+                <p className="text-3xl font-semibold">100 MB</p>
+                <p className="mt-2 text-sm text-white/60">limită per fișier</p>
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-                <p className="text-3xl font-semibold">AI</p>
-                <p className="mt-2 text-sm text-white/60">modele multiple disponibile</p>
+                <p className="text-3xl font-semibold">4 modele</p>
+                <p className="mt-2 text-sm text-white/60">viteză sau calitate, în funcție de nevoie</p>
               </div>
             </div>
           </div>
@@ -380,7 +415,7 @@ export default function Home() {
               <div className="mb-5 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-white/50">Previzualizare output</p>
-                  <h2 className="text-2xl font-semibold">Ce primești</h2>
+                  <h2 className="text-2xl font-semibold">Ce primești la final</h2>
                 </div>
                 <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
                   Bun pentru creatori
@@ -395,7 +430,13 @@ export default function Home() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-black">
-                        {item === "Vocals" ? "🎤" : item === "Drums" ? "🥁" : item === "Bass" ? "🎸" : "🎹"}
+                        {item === "Vocals"
+                          ? "🎤"
+                          : item === "Drums"
+                          ? "🥁"
+                          : item === "Bass"
+                          ? "🎸"
+                          : "🎹"}
                       </div>
                       <div>
                         <p className="font-medium">{item}</p>
@@ -408,7 +449,8 @@ export default function Home() {
               </div>
 
               <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-white/60">
-                Ideal pentru remixuri, karaoke, content pe TikTok, editare podcasturi și extragere vocal / instrumental.
+                Patru stem-uri separate, gata pentru ascultare, descărcare și folosire în
+                remixuri, karaoke, TikTok, podcast edit sau alte proiecte audio.
               </div>
             </div>
           </div>
@@ -418,7 +460,9 @@ export default function Home() {
       <section id="cum-functioneaza" className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
         <div className="mb-8">
           <p className="text-sm uppercase tracking-[0.2em] text-white/40">Cum funcționează</p>
-          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">3 pași simpli</h2>
+          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
+            3 pași simpli, fără bătăi de cap
+          </h2>
         </div>
 
         <div className="grid gap-5 md:grid-cols-3">
@@ -436,9 +480,9 @@ export default function Home() {
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black">
               2
             </div>
-            <h3 className="text-xl font-semibold">AI separă stem-urile</h3>
+            <h3 className="text-xl font-semibold">Alegi modelul potrivit</h3>
             <p className="mt-3 leading-7 text-white/60">
-              Modelul procesează și îți împarte melodia în vocals, drums, bass și other.
+              Poți merge pe viteză sau pe o separare mai atentă, în funcție de ce ai nevoie.
             </p>
           </div>
 
@@ -448,19 +492,27 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-semibold">Asculți și descarci</h3>
             <p className="mt-3 leading-7 text-white/60">
-              Faci preview direct în browser și descarci stem-urile individual sau pe toate.
+              Primești stem-urile separate, le previzualizezi direct în browser și le descarci
+              individual sau pe toate.
             </p>
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
+        <div className="mb-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/40">De ce e util</p>
+          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
+            Gândit pentru folosire reală, nu doar pentru demo
+          </h2>
+        </div>
+
         <div className="grid gap-5 md:grid-cols-4">
           {[
-            ["Creat pentru remix", "Extrage vocea pentru remixuri, mashup-uri și rework-uri."],
-            ["Karaoke rapid", "Obții instrumentalul și stem-urile fără setup complicat."],
-            ["Content creators", "Bun pentru TikTok, Shorts, Reels și editare video."],
-            ["Economisești timp", "Scurtezi drastic munca manuală și testele inutile."],
+            ["Remix și mashup", "Extragi vocea sau instrumentele pentru rework-uri, editări și experimente muzicale."],
+            ["Karaoke și instrumental", "Obții rapid track-uri fără voce pentru karaoke, repetiții sau cover-uri."],
+            ["Content creators", "Util pentru TikTok, Shorts, Reels, podcast edit și clipuri cu sunet mai curat."],
+            ["Economie de timp", "Reduci drastic timpul pierdut cu metode manuale sau cu tool-uri slabe."],
           ].map(([title, desc]) => (
             <div key={title} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
               <h3 className="text-lg font-semibold">{title}</h3>
@@ -471,19 +523,59 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
+        <div className="mb-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/40">Modele disponibile</p>
+          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">Ce model să alegi?</h2>
+          <p className="mt-4 max-w-3xl text-base leading-8 text-white/60">
+            Fiecare model are un compromis diferit între viteză, claritate și tipul de rezultat.
+            Nu toate piesele reacționează la fel, deci uneori merită să compari două variante.
+          </p>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          {Object.values(MODEL_DETAILS).map((item) => (
+            <div key={item.title} className="rounded-[30px] border border-white/10 bg-white/5 p-6">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold">{item.title}</h3>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/65">
+                  model
+                </span>
+              </div>
+              <p className="mt-3 text-sm font-medium text-white/75">{item.short}</p>
+              <p className="mt-3 text-sm leading-7 text-white/60">{item.description}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 rounded-[28px] border border-white/10 bg-black/25 p-5 text-sm leading-7 text-white/65">
+          <strong className="text-white">Nu știi ce să alegi?</strong> Începe cu{" "}
+          <span className="font-semibold text-white">htdemucs</span>. Dacă vrei o separare mai
+          atentă, încearcă <span className="font-semibold text-white">htdemucs_ft</span>. Dacă vrei
+          o alternativă diferită, testează <span className="font-semibold text-white">mdx_extra</span>{" "}
+          sau <span className="font-semibold text-white">mdx_extra_q</span>.
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
         <div className="rounded-[36px] border border-white/10 bg-white/5 p-8">
           <div className="grid gap-8 md:grid-cols-2">
             <div>
               <p className="text-sm uppercase tracking-[0.2em] text-white/40">De ce este gratuit?</p>
               <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Nu vinzi AI. Vinzi rezultat.
+                Important nu este modelul. Important este ce poți face cu rezultatul.
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-8 text-white/60">
-                Acest tool rulează pe servere AI care implică costuri reale pentru fiecare procesare.
-                L-am făcut gratuit ca să fie util comunității și creatorilor care au nevoie de rezultate rapide.
+                Acest tool există pentru un scop simplu: să îți ofere rapid stem-uri utile, curate
+                și ușor de folosit. În loc să pierzi timp cu instalări, setări și workflow-uri
+                complicate, încarci fișierul și primești direct ce te interesează.
               </p>
               <p className="mt-4 max-w-2xl text-base leading-8 text-white/60">
-                Dacă te ajută, îl poți susține printr-o donație.
+                Tool-ul rulează pe infrastructură care implică costuri reale de procesare. L-am făcut
+                disponibil gratuit pentru că poate fi util creatorilor, editorilor și celor care au
+                nevoie de separare audio rapidă.
+              </p>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-white/60">
+                Dacă ți-a fost util și vrei să susții proiectul, poți contribui printr-o donație.
               </p>
             </div>
 
@@ -569,19 +661,36 @@ export default function Home() {
                   </div>
                 )}
 
-                <div className="grid gap-4 md:grid-cols-[1fr_auto_auto]">
+                <div className="rounded-[22px] border border-white/10 bg-black/25 p-4">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-white/80">Model selectat</p>
+                    <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-white/60">
+                      recomandare: htdemucs
+                    </span>
+                  </div>
+
                   <select
                     value={model}
                     onChange={(e) => setModel(e.target.value)}
                     disabled={isBusy}
-                    className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none disabled:opacity-50"
+                    className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none disabled:opacity-50"
                   >
-                    <option value="htdemucs">htdemucs · rapid</option>
-                    <option value="htdemucs_ft">htdemucs_ft · calitate mai mare</option>
-                    <option value="mdx_extra">mdx_extra</option>
-                    <option value="mdx_extra_q">mdx_extra_q</option>
+                    <option value="htdemucs">htdemucs · recomandat pentru majoritatea cazurilor</option>
+                    <option value="htdemucs_ft">htdemucs_ft · mai lent, adesea mai curat</option>
+                    <option value="mdx_extra">mdx_extra · alternativă bună pentru comparație</option>
+                    <option value="mdx_extra_q">mdx_extra_q · mai rapid, mai light</option>
                   </select>
 
+                  <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-sm font-medium text-white">{MODEL_DETAILS[model].title}</p>
+                    <p className="mt-1 text-sm text-white/70">{MODEL_DETAILS[model].short}</p>
+                    <p className="mt-2 text-sm leading-6 text-white/55">
+                      {MODEL_DETAILS[model].description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
                   <button
                     onClick={handleUpload}
                     disabled={!file || isBusy}
@@ -711,12 +820,12 @@ export default function Home() {
                   <h3 className="mb-3 text-xl font-semibold">💖 Susține acest proiect</h3>
 
                   <p className="mb-4 text-white/65">
-                    Acest tool rulează pe servere AI care implică costuri reale.
-                    Dacă ți-a fost util, poți contribui pentru a-l menține gratuit.
+                    Acest tool rulează pe servere AI care implică costuri reale. Dacă ți-a economisit
+                    timp sau ți-a fost util, îl poți susține printr-o donație.
                   </p>
 
                   <p className="mb-5 text-sm text-white/45">
-                    Chiar și o contribuție mică ajută enorm la acoperirea costurilor de procesare.
+                    Orice contribuție ajută la menținerea proiectului gratuit.
                   </p>
 
                   <div className="flex flex-col justify-center gap-3 sm:flex-row">
@@ -768,8 +877,8 @@ export default function Home() {
               "Da. După procesare, fiecare stem poate fi redat direct în browser.",
             ],
             [
-              "Care model e mai bun?",
-              "htdemucs este mai rapid, iar htdemucs_ft tinde să ofere calitate mai bună, dar mai lent.",
+              "Ce diferență este între modele?",
+              "htdemucs este alegerea recomandată pentru majoritatea utilizatorilor. htdemucs_ft pune accent mai mare pe calitate, dar este mai lent. mdx_extra și mdx_extra_q sunt alternative utile când vrei să compari rezultate sau să testezi o separare diferită.",
             ],
           ].map(([q, a]) => (
             <div key={q} className="rounded-[28px] border border-white/10 bg-white/5 p-6">
@@ -788,7 +897,7 @@ export default function Home() {
               Încearcă gratuit
             </button>
             <a href="#cum-functioneaza" className="transition hover:text-white">
-              Cum funcționează
+              Vezi cum funcționează
             </a>
           </div>
         </div>
