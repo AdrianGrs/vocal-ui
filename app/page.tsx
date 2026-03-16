@@ -65,6 +65,7 @@ export default function Home() {
 
   const pollRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const toolRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     return () => {
@@ -80,6 +81,10 @@ export default function Home() {
   };
 
   const stemUrl = (stemName: string, id = jobId) => `${API}/download/stem/${id}/${stemName}`;
+
+  const scrollToTool = () => {
+    toolRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const validateFile = (picked: File | null): string => {
     if (!picked) return "Nu ai selectat niciun fișier.";
@@ -293,24 +298,224 @@ export default function Home() {
   }, [stems]);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#1c1c2b,transparent_35%),linear-gradient(180deg,#0b0b10_0%,#09090b_100%)] text-white">
-      <div className="mx-auto max-w-7xl px-6 py-10 md:px-10">
-        <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
-          <section className="rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
-            <div className="mb-8">
-              <div className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
-                AI stem separation • Producer mode
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#17172a,transparent_30%),linear-gradient(180deg,#07070a_0%,#09090b_100%)] text-white">
+      <section className="border-b border-white/10">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-black">
+              🎛️
+            </div>
+            <div>
+              <p className="text-sm text-white/60">AI Audio Tool</p>
+              <p className="text-lg font-semibold">Vocal Remover Pro</p>
+            </div>
+          </div>
+
+          <button
+            onClick={scrollToTool}
+            className="rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
+          >
+            Încearcă gratuit
+          </button>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-24">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <div className="mb-5 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/75">
+              4 stem-uri separate • upload rapid • preview instant
+            </div>
+
+            <h1 className="max-w-4xl text-5xl font-semibold leading-tight tracking-tight md:text-7xl">
+              Separă vocea și instrumentele din orice melodie în{" "}
+              <span className="text-white/60">câteva secunde</span>.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/65">
+              Încarci track-ul, AI-ul procesează și primești vocals, drums, bass și other separat.
+              Fără instalări. Fără complicații.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <button
+                onClick={scrollToTool}
+                className="rounded-2xl bg-white px-6 py-4 font-semibold text-black transition hover:opacity-90"
+              >
+                Încearcă gratuit
+              </button>
+
+              <a
+                href="#cum-functioneaza"
+                className="rounded-2xl border border-white/10 px-6 py-4 font-semibold text-white transition hover:bg-white/5"
+              >
+                Cum funcționează
+              </a>
+            </div>
+
+            <p className="mt-5 text-sm text-white/45">
+              ⚡ Rulează pe servere GPU reale • Procesare AI avansată
+            </p>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <p className="text-3xl font-semibold">4</p>
+                <p className="mt-2 text-sm text-white/60">stem-uri separate</p>
               </div>
 
-              <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
-                Vocal Remover <span className="text-white/60">Pro</span>
-              </h1>
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <p className="text-3xl font-semibold">100MB</p>
+                <p className="mt-2 text-sm text-white/60">limită upload per fișier</p>
+              </div>
 
-              <p className="mt-4 max-w-2xl text-base leading-7 text-white/65 md:text-lg">
-                Încarci melodia și primești stem-uri separate pentru vocals, drums, bass și other.
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+                <p className="text-3xl font-semibold">AI</p>
+                <p className="mt-2 text-sm text-white/60">modele multiple disponibile</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[36px] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+            <div className="rounded-[28px] border border-white/10 bg-black/30 p-6">
+              <div className="mb-5 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white/50">Previzualizare output</p>
+                  <h2 className="text-2xl font-semibold">Ce primești</h2>
+                </div>
+                <div className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
+                  Bun pentru creatori
+                </div>
+              </div>
+
+              <div className="grid gap-3">
+                {["Vocals", "Drums", "Bass", "Other"].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-black">
+                        {item === "Vocals" ? "🎤" : item === "Drums" ? "🥁" : item === "Bass" ? "🎸" : "🎹"}
+                      </div>
+                      <div>
+                        <p className="font-medium">{item}</p>
+                        <p className="text-sm text-white/50">Preview + Download</p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-white/40">Separat</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-white/60">
+                Ideal pentru remixuri, karaoke, content pe TikTok, editare podcasturi și extragere vocal / instrumental.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="cum-functioneaza" className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
+        <div className="mb-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/40">Cum funcționează</p>
+          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">3 pași simpli</h2>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          <div className="rounded-[30px] border border-white/10 bg-white/5 p-6">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black">
+              1
+            </div>
+            <h3 className="text-xl font-semibold">Încarci melodia</h3>
+            <p className="mt-3 leading-7 text-white/60">
+              Adaugi fișierul audio prin drag & drop sau selectare manuală.
+            </p>
+          </div>
+
+          <div className="rounded-[30px] border border-white/10 bg-white/5 p-6">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black">
+              2
+            </div>
+            <h3 className="text-xl font-semibold">AI separă stem-urile</h3>
+            <p className="mt-3 leading-7 text-white/60">
+              Modelul procesează și îți împarte melodia în vocals, drums, bass și other.
+            </p>
+          </div>
+
+          <div className="rounded-[30px] border border-white/10 bg-white/5 p-6">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black">
+              3
+            </div>
+            <h3 className="text-xl font-semibold">Asculți și descarci</h3>
+            <p className="mt-3 leading-7 text-white/60">
+              Faci preview direct în browser și descarci stem-urile individual sau pe toate.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
+        <div className="grid gap-5 md:grid-cols-4">
+          {[
+            ["Creat pentru remix", "Extrage vocea pentru remixuri, mashup-uri și rework-uri."],
+            ["Karaoke rapid", "Obții instrumentalul și stem-urile fără setup complicat."],
+            ["Content creators", "Bun pentru TikTok, Shorts, Reels și editare video."],
+            ["Economisești timp", "Scurtezi drastic munca manuală și testele inutile."],
+          ].map(([title, desc]) => (
+            <div key={title} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <h3 className="text-lg font-semibold">{title}</h3>
+              <p className="mt-3 text-sm leading-6 text-white/60">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-8 md:px-10 md:py-12">
+        <div className="rounded-[36px] border border-white/10 bg-white/5 p-8">
+          <div className="grid gap-8 md:grid-cols-2">
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-white/40">De ce este gratuit?</p>
+              <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
+                Nu vinzi AI. Vinzi rezultat.
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-white/60">
+                Acest tool rulează pe servere AI care implică costuri reale pentru fiecare procesare.
+                L-am făcut gratuit ca să fie util comunității și creatorilor care au nevoie de rezultate rapide.
+              </p>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-white/60">
+                Dacă te ajută, îl poți susține printr-o donație.
               </p>
             </div>
 
+            <div className="grid gap-4">
+              {[
+                "Remixuri și mashup-uri",
+                "Karaoke și instrumental",
+                "Voice cleanup pentru content",
+                "Sampling și re-editare",
+              ].map((item) => (
+                <div key={item} className="rounded-2xl border border-white/10 bg-black/25 px-5 py-4">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section ref={toolRef} className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-14">
+        <div className="mb-8 flex items-end justify-between gap-6">
+          <div>
+            <p className="text-sm uppercase tracking-[0.2em] text-white/40">Tool</p>
+            <h2 className="mt-3 text-3xl font-semibold md:text-5xl">Încearcă acum</h2>
+          </div>
+          <div className="hidden rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/55 md:block">
+            Uploadezi. Procesezi. Descarci.
+          </div>
+        </div>
+
+        <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
+          <section className="rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
             <div
               onDragOver={(e) => {
                 e.preventDefault();
@@ -335,9 +540,13 @@ export default function Home() {
                   </p>
                 </div>
 
-                <label className={`flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.03] px-6 py-10 text-center transition hover:bg-white/[0.06] ${isBusy ? "pointer-events-none opacity-50" : ""}`}>
+                <label
+                  className={`flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.03] px-6 py-10 text-center transition hover:bg-white/[0.06] ${
+                    isBusy ? "pointer-events-none opacity-50" : ""
+                  }`}
+                >
                   <div className="mb-3 text-4xl">🎵</div>
-                  <div className="text-base font-medium">Drop file here</div>
+                  <div className="text-base font-medium">Trage fișierul aici</div>
                   <div className="mt-1 text-sm text-white/50">sau apasă pentru selectare</div>
 
                   <input
@@ -378,7 +587,7 @@ export default function Home() {
                     disabled={!file || isBusy}
                     className="rounded-2xl bg-white px-6 py-3 font-medium text-black transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    {isBusy ? "Processing..." : "Generate Stems"}
+                    {isBusy ? "Se procesează..." : "Generează stem-uri"}
                   </button>
 
                   <button
@@ -394,7 +603,7 @@ export default function Home() {
 
           <aside className="rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">Job Monitor</h2>
+              <h2 className="text-2xl font-semibold">Monitor job</h2>
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/70">
                 {statusText[status]}
               </span>
@@ -402,7 +611,7 @@ export default function Home() {
 
             <div className="rounded-[24px] border border-white/10 bg-black/25 p-5">
               <div className="mb-3 flex items-center justify-between text-sm text-white/60">
-                <span>Progress</span>
+                <span>Progres</span>
                 <span>{progress}%</span>
               </div>
 
@@ -436,7 +645,7 @@ export default function Home() {
                       onClick={handleRetry}
                       className="mt-4 rounded-xl border border-red-300/20 bg-red-400/10 px-4 py-2 text-sm font-medium text-red-100 transition hover:bg-red-400/20"
                     >
-                      Retry
+                      Încearcă din nou
                     </button>
                   )}
                 </div>
@@ -451,7 +660,7 @@ export default function Home() {
                     onClick={handleDownloadAll}
                     className="rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/5"
                   >
-                    Download All
+                    Descarcă tot
                   </button>
                 </div>
 
@@ -481,7 +690,7 @@ export default function Home() {
                             onClick={() => handleDownloadStem(stem)}
                             className="shrink-0 rounded-xl border border-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/5"
                           >
-                            Download
+                            Descarcă
                           </button>
                         </div>
 
@@ -497,11 +706,93 @@ export default function Home() {
                     );
                   })}
                 </div>
+
+                <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
+                  <h3 className="mb-3 text-xl font-semibold">💖 Susține acest proiect</h3>
+
+                  <p className="mb-4 text-white/65">
+                    Acest tool rulează pe servere AI care implică costuri reale.
+                    Dacă ți-a fost util, poți contribui pentru a-l menține gratuit.
+                  </p>
+
+                  <p className="mb-5 text-sm text-white/45">
+                    Chiar și o contribuție mică ajută enorm la acoperirea costurilor de procesare.
+                  </p>
+
+                  <div className="flex flex-col justify-center gap-3 sm:flex-row">
+                    <a
+                      href="LINK_STRIPE"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-xl bg-white px-6 py-3 font-semibold text-black transition hover:opacity-90"
+                    >
+                      Susține proiectul
+                    </a>
+
+                    <a
+                      href="LINK_PAYPAL"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+                    >
+                      Donează prin PayPal
+                    </a>
+                  </div>
+
+                  <p className="mt-4 text-xs text-white/35">Plată sigură prin Stripe / PayPal</p>
+                </div>
               </div>
             )}
           </aside>
         </div>
-      </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-14">
+        <div className="mb-8">
+          <p className="text-sm uppercase tracking-[0.2em] text-white/40">Întrebări frecvente</p>
+          <h2 className="mt-3 text-3xl font-semibold md:text-5xl">FAQ</h2>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {[
+            [
+              "Ce formate acceptă?",
+              "Poți urca MP3, WAV, M4A, AAC, FLAC, OGG și WEBM, în limita de 100 MB.",
+            ],
+            [
+              "Ce primesc la final?",
+              "Patru stem-uri separate: vocals, drums, bass și other.",
+            ],
+            [
+              "Pot asculta înainte să descarc?",
+              "Da. După procesare, fiecare stem poate fi redat direct în browser.",
+            ],
+            [
+              "Care model e mai bun?",
+              "htdemucs este mai rapid, iar htdemucs_ft tinde să ofere calitate mai bună, dar mai lent.",
+            ],
+          ].map(([q, a]) => (
+            <div key={q} className="rounded-[28px] border border-white/10 bg-white/5 p-6">
+              <h3 className="text-lg font-semibold">{q}</h3>
+              <p className="mt-3 text-sm leading-7 text-white/60">{a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-white/45 md:flex-row md:items-center md:justify-between md:px-10">
+          <p>Proiect independent construit pentru comunitate.</p>
+          <div className="flex gap-4">
+            <button onClick={scrollToTool} className="transition hover:text-white">
+              Încearcă gratuit
+            </button>
+            <a href="#cum-functioneaza" className="transition hover:text-white">
+              Cum funcționează
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
