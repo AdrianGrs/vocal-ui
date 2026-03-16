@@ -52,49 +52,49 @@
         );
       })}
     </div>
-
-    <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
-      <h3 className="mb-3 text-xl font-semibold">💖 Susține acest proiect</h3>
-
-      <p className="mb-4 text-white/65">
-        Acest tool rulează pe servere AI care implică costuri reale. Dacă ți-a economisit
-        timp sau ți-a fost util, îl poți susține printr-o donație.
-      </p>
-
-      <p className="mb-5 text-sm text-white/45">
-        Orice contribuție ajută la menținerea proiectului gratuit.
-      </p>
-
-      <div className="flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
-        <a
-          href="https://revolut.me/adrian4sbr"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl bg-white px-6 py-3 font-semibold text-black transition hover:opacity-90"
-        >
-          Donează prin Revolut
-        </a>
-
-        <a
-          href="https://buymeacoffee.com/vocalremoverpro"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-        >
-          Buy Me a Coffee
-        </a>
-
-        <a
-          href="https://paypal.me/Adriangrs88"
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-        >
-          Donează prin PayPal
-        </a>
-      </div>
-
-      <p className="mt-4 text-xs text-white/35">Mulțumesc pentru susținere.</p>
-    </div>
   </div>
 )}
+
+<div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
+  <h3 className="mb-3 text-xl font-semibold">💖 Susține acest proiect</h3>
+
+  <p className="mb-4 text-white/65">
+    Acest tool rulează pe servere AI care implică costuri reale. Dacă ți-a economisit
+    timp sau ți-a fost util, îl poți susține printr-o donație.
+  </p>
+
+  <p className="mb-5 text-sm text-white/45">
+    Orice contribuție ajută la menținerea proiectului gratuit.
+  </p>
+
+  <div className="flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+    <a
+      href="https://revolut.me/adrian4sbr"
+      target="_blank"
+      rel="noreferrer"
+      className="rounded-xl bg-white px-6 py-3 font-semibold text-black transition hover:opacity-90"
+    >
+      Donează prin Revolut
+    </a>
+
+    <a
+      href="https://buymeacoffee.com/vocalremoverpro"
+      target="_blank"
+      rel="noreferrer"
+      className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+    >
+      Buy Me a Coffee
+    </a>
+
+    <a
+      href="https://paypal.me/Adriangrs88"
+      target="_blank"
+      rel="noreferrer"
+      className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+    >
+      Donează prin PayPal
+    </a>
+  </div>
+
+  <p className="mt-4 text-xs text-white/35">Mulțumesc pentru susținere.</p>
+</div>
