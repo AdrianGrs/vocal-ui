@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const ANALYZE_API = "http://127.0.0.1:8000";
+const ANALYZE_API = "https://9uzm9xomu9qjak-8000.proxy.runpod.net";
 
 type AnalysisResult = {
   success: boolean;
@@ -37,19 +37,21 @@ export default function AudioAnalyzer() {
         body: form,
       });
 
-      const data = await res.json();
+      let data: any = null;
+
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Backend invalid response");
+      }
 
       if (!res.ok) {
         throw new Error(data?.detail || "Eroare la analiză.");
       }
 
       setResult(data);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("A apărut o eroare.");
-      }
+    } catch (err: any) {
+      setError(err?.message || "A apărut o eroare.");
     } finally {
       setLoading(false);
     }
@@ -75,12 +77,16 @@ export default function AudioAnalyzer() {
         <div className="flex flex-col gap-5">
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.03] px-6 py-10 text-center transition hover:bg-white/[0.06]">
             <div className="mb-3 text-4xl">🎼</div>
-            <div className="text-base font-medium">Alege fișierul pentru analiză</div>
-            <div className="mt-1 text-sm text-white/50">MP3, WAV, M4A, AAC, FLAC, OGG</div>
+            <div className="text-base font-medium">
+              Alege fișierul pentru analiză
+            </div>
+            <div className="mt-1 text-sm text-white/50">
+              MP3, WAV, M4A, AAC, FLAC, OGG
+            </div>
 
             <input
               type="file"
-              accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.webm"
+              accept="audio/*"
               className="hidden"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
@@ -89,7 +95,9 @@ export default function AudioAnalyzer() {
           {file && (
             <div className="rounded-[22px] border border-white/10 bg-white/[0.04] px-5 py-4">
               <p className="text-sm text-white/50">Fișier selectat</p>
-              <p className="mt-1 break-all text-base font-medium">{file.name}</p>
+              <p className="mt-1 break-all text-base font-medium">
+                {file.name}
+              </p>
               <p className="mt-1 text-sm text-white/45">
                 {(file.size / 1024 / 1024).toFixed(2)} MB
               </p>
