@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import AudioAnalyzer from "./components/AudioAnalyzer";
 
-const API = "https://aiyiz7019bk9xi-8000.proxy.runpod.net";
+const API = "https://9uzm9xomu9qjak-8000.proxy.runpod.net";
 const MAX_FILE_SIZE_MB = 100;
 
 type JobStatus = "idle" | "uploading" | "queued" | "processing" | "done" | "error";
@@ -92,7 +92,7 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<JobStatus>("idle");
   const [error, setError] = useState("");
-  const [model, setModel] = useState("htdemucs");
+  const [model, setModel] = useState("htdemucs_ft");
   const [dragOver, setDragOver] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
   const [stems, setStems] = useState<Record<string, string>>({});
