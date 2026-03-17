@@ -5,12 +5,29 @@ import { useState } from "react";
 const ANALYZE_API = "https://9uzm9xomu9qjak-8000.proxy.runpod.net";
 
 type AnalysisResult = {
-  success: boolean;
-  bpm: number;
-  key: string;
-  confidence: number;
-  analyzed_from: string;
+  success?: boolean;
+  bpm?: number;
+  key?: string;
+  confidence?: number;
+  analyzed_from?: string;
+  error?: string;
 };
+
+const ACCEPTED_AUDIO_TYPES = [
+  "audio/mpeg",
+  "audio/mp3",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/wave",
+  "audio/mp4",
+  "audio/x-m4a",
+  "audio/aac",
+  "audio/flac",
+  "audio/ogg",
+  "audio/webm",
+];
+
+const MAX_FILE_SIZE_MB = 100;
 
 export default function AudioAnalyzer() {
   const [file, setFile] = useState<File | null>(null);
@@ -18,7 +35,33 @@ export default function AudioAnalyzer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const validateFile = (picked: File | null): string => {
+    if (!picked) return "Selectează un fișier audio.";
+
+    const sizeMb = picked.size / 1024 / 1024;
+    if (sizeMb > MAX_FILE_SIZE_MB) {
+      return `Fișierul este prea mare. Limita este ${MAX_FILE_SIZE_MB} MB.`;
+    }
+
+    const hasValidMime = ACCEPTED_AUDIO_TYPES.includes(picked.type);
+    const hasAudioFallback =
+      picked.type.startsWith("audio/") ||
+      /\.(mp3|wav|m4a|aac|flac|ogg|webm)$/i.test(picked.name);
+
+    if (!hasValidMime && !hasAudioFallback) {
+      return "Format invalid. Încarcă MP3, WAV, M4A, AAC, FLAC, OGG sau WEBM.";
+    }
+
+    return "";
+  };
+
   const handleAnalyze = async () => {
+    const validationError = validateFile(file);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     if (!file) {
       setError("Selectează un fișier audio.");
       return;
@@ -37,21 +80,25 @@ export default function AudioAnalyzer() {
         body: form,
       });
 
-      let data: any = null;
+      let data: AnalysisResult | null = null;
 
       try {
         data = await res.json();
       } catch {
-        throw new Error("Backend invalid response");
+        throw new Error("Serverul a returnat un răspuns invalid.");
       }
 
       if (!res.ok) {
-        throw new Error(data?.detail || "Eroare la analiză.");
+        throw new Error(data?.error || data?.detail || "Eroare la analiză.");
       }
 
       setResult(data);
-    } catch (err: any) {
-      setError(err?.message || "A apărut o eroare.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("A apărut o eroare.");
+      }
     } finally {
       setLoading(false);
     }
@@ -77,27 +124,28 @@ export default function AudioAnalyzer() {
         <div className="flex flex-col gap-5">
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-[24px] border border-white/10 bg-white/[0.03] px-6 py-10 text-center transition hover:bg-white/[0.06]">
             <div className="mb-3 text-4xl">🎼</div>
-            <div className="text-base font-medium">
-              Alege fișierul pentru analiză
-            </div>
+            <div className="text-base font-medium">Alege fișierul pentru analiză</div>
             <div className="mt-1 text-sm text-white/50">
-              MP3, WAV, M4A, AAC, FLAC, OGG
+              MP3, WAV, M4A, AAC, FLAC, OGG, WEBM · maxim {MAX_FILE_SIZE_MB} MB
             </div>
 
             <input
               type="file"
-              accept="audio/*"
+              accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg,.webm"
               className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              onChange={(e) => {
+                const picked = e.target.files?.[0] || null;
+                setFile(picked);
+                setResult(null);
+                setError("");
+              }}
             />
           </label>
 
           {file && (
             <div className="rounded-[22px] border border-white/10 bg-white/[0.04] px-5 py-4">
               <p className="text-sm text-white/50">Fișier selectat</p>
-              <p className="mt-1 break-all text-base font-medium">
-                {file.name}
-              </p>
+              <p className="mt-1 break-all text-base font-medium">{file.name}</p>
               <p className="mt-1 text-sm text-white/45">
                 {(file.size / 1024 / 1024).toFixed(2)} MB
               </p>
@@ -124,10 +172,19 @@ export default function AudioAnalyzer() {
               <h3 className="text-xl font-semibold">Rezultat analiză</h3>
 
               <div className="mt-4 grid gap-3 text-white/85">
-                <p><strong>BPM:</strong> {result.bpm}</p>
-                <p><strong>Key:</strong> {result.key}</p>
-                <p><strong>Confidence:</strong> {result.confidence}%</p>
-                <p><strong>Analyzed from:</strong> {result.analyzed_from}</p>
+                <p>
+                  <strong>BPM:</strong> {result.bpm ?? "—"}
+                </p>
+                <p>
+                  <strong>Key:</strong> {result.key ?? "—"}
+                </p>
+                <p>
+                  <strong>Confidence:</strong>{" "}
+                  {typeof result.confidence === "number" ? `${result.confidence}%` : "—"}
+                </p>
+                <p>
+                  <strong>Analyzed from:</strong> {result.analyzed_from ?? "—"}
+                </p>
               </div>
             </div>
           )}
