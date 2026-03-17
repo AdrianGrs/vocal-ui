@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import AudioAnalyzer from "./components/AudioAnalyzer";
 
 const API = "https://aiyiz7019bk9xi-8000.proxy.runpod.net";
 const MAX_FILE_SIZE_MB = 100;
@@ -875,6 +876,10 @@ export default function Home() {
             </div>
           </aside>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-14">
+        <AudioAnalyzer />
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-14">
