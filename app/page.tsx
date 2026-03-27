@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import AudioAnalyzer from "./components/AudioAnalyzer";
 
-const API = "https://9uzm9xomu9qjak-8000.proxy.runpod.net";
+const API = process.env.NEXT_PUBLIC_API_URL!;
 const MAX_FILE_SIZE_MB = 100;
 
 type JobStatus = "idle" | "uploading" | "queued" | "processing" | "done" | "error";
