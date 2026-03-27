@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const ANALYZE_API = "https://9uzm9xomu9qjak-8000.proxy.runpod.net";
+const ANALYZE_API = process.env.NEXT_PUBLIC_API_URL!;
 
 type AnalysisResult = {
   success?: boolean;
@@ -11,6 +11,7 @@ type AnalysisResult = {
   confidence?: number;
   analyzed_from?: string;
   error?: string;
+  detail?: string;
 };
 
 const ACCEPTED_AUDIO_TYPES = [
